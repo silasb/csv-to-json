@@ -1,0 +1,13 @@
+name: csv-to-json
+version: 0.1.0
+
+authors:
+  - silasb <silas.baronda@gmail.com>
+
+targets:
+  csv-to-json:
+    main: src/csv-to-json.cr
+
+crystal: 0.23.1
+
+license: MIT
