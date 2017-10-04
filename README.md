@@ -14,6 +14,10 @@ Used with jq to quickly filter and display data
 
 	 c2j beam-network.csv | jq '.[] | select(.["Last Name"] == "Rutledge")'
 
+Find records, but redefine all matching objects
+
+	 c2j beam-network.csv | jq '.[] | select(.["Last Name"] == "Rutledge") | { last_name: ."Last Name", first_name: ."First Name" }'
+
 ## Development
 
 TODO: Write development instructions here
