@@ -3,27 +3,36 @@ require "csv"
 require "json"
 
 module Csv::To::Json
-  def self.run(csv)
+  def self.run(csv, options = {} of Symbol => String)
     unless File.exists?(csv)
       STDERR.puts "File not found"
-      exit 1 
+      exit 1
     end
 
     STDIN.blocking = true
 
-    csv_io = CSV.new(File.read(csv), headers: true)
+    tail = options.delete :tail
+
+    file = File.open(csv)
+    csv_io = CSV::Parser.new(file)
+
+    header = csv_io.next_row
 
     puts "["
 
-    csv_io.next
+    count = 0
+    row = csv_io.next_row
 
-    loop do
-      print csv_io.row.to_h.to_json
-      if csv_io.next
+    while !row.nil?
+      print Hash.zip(header.as(Array(String)), row.as(Array(String))).to_json
+      row = csv_io.next_row
+      # super ugly
+      if tail.nil? ? !row.nil? : tail.to_i != count + 1 && !row.nil?
         puts ","
       else
         break
       end
+      count += 1
     end
 
     puts "\n]"
