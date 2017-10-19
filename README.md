@@ -1,6 +1,7 @@
 # csv-to-json
 
 Blindly convert from CSV to JSON while using the CSV headers as keys for the JSON objects.
+Also works with TSV files or any file that can be delimited.
 
 ## Installation
 
@@ -10,13 +11,40 @@ move somewhere in your $PATH
 
 ## Usage
 
-Used with jq to quickly filter and display data
+	Usage:
+		./c2j [flags...] <file> [arg...]
 
-	 c2j beam-network.csv | jq '.[] | select(.["Last Name"] == "Rutledge")'
+	CSV to JSON
+
+	Flags:
+		--delimiter, -d
+		--help (default: false)     # Displays help for the current command.
+		--quote-char, -q
+		--tail, -t
+		--version (default: false)
+
+	Arguments:
+		file (required)
+
+Convert CSV to JSON
+
+	c2j some.csv
+
+Convert TSV to JSON
+
+	c2j -d '\t' -q '|' some.txt
+
+Used with `jq` to quickly filter and display data
+
+	 c2j some.csv | jq '.[] | select(.["Last Name"] == "Rutledge")'
 
 Find records, but redefine all matching objects
 
-	 c2j beam-network.csv | jq '.[] | select(.["Last Name"] == "Rutledge") | { last_name: ."Last Name", first_name: ."First Name" }'
+	 c2j some.csv | jq '.[] | select(.["Last Name"] == "Rutledge") | { last_name: ."Last Name", first_name: ."First Name" }'
+
+Used to convert CSV to a format that [`esbulk`](https://github.com/miku/esbulk) can use
+
+	c2j -d '\t' -q '|' LATEST.txt | jq -c '.[] | .' | esbulk -index some-index
 
 ## Development
 
