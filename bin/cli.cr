@@ -15,7 +15,7 @@ class CLI < Admiral::Command
   define_argument file : String,
     required: true
 
-  define_help description: "A command that says hello"
+  define_help description: "CSV to JSON"
 
   define_version Csv::To::Json::VERSION
 
