@@ -8,6 +8,10 @@ targets:
   csv-to-json:
     main: src/csv-to-json.cr
 
+dependencies:
+  admiral:
+    github: jwaldrip/admiral.cr
+
 crystal: 0.23.1
 
 license: MIT
