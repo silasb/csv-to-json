@@ -12,6 +12,10 @@ class CLI < Admiral::Command
   define_flag tail : Int64,
     short: t
 
+  define_flag empty_value_replace_char : String,
+    short: e,
+    default: nil
+
   define_argument file : String,
     required: true
 
@@ -22,7 +26,7 @@ class CLI < Admiral::Command
   def run
     file = arguments.file
 
-    options = {} of Symbol => (Int64 | Char | String)
+    options = {} of Symbol => (Int64 | Char | String | Nil)
 
     if ! flags.delimiter.nil?
       delimiter = flags.delimiter.as(String)
@@ -59,6 +63,8 @@ class CLI < Admiral::Command
     if flags.tail
       options[:tail] = flags.tail.as(Int64)
     end
+
+    options[:empty_value_replace_char] = flags.empty_value_replace_char
 
     Csv::To::Json.run(file, options)
   end

@@ -11,6 +11,7 @@ module Csv::To::Json
 
     STDIN.blocking = true
 
+    empty_value_replace_char = options[:empty_value_replace_char]
     tail = options.delete :tail
     delimiter = options.fetch(:delimiter, ',').as(Char)
     quote_char = options.fetch(:quote_char, '"').as(Char)
@@ -26,7 +27,31 @@ module Csv::To::Json
     row = csv_io.next_row
 
     while !row.nil?
-      print Hash.zip(header.as(Array(String)), row.as(Array(String))).to_json
+
+      values = row.as(Array(String))
+
+      # replace each row value with a empty
+      #
+      # row.as(Array(String)) will already convert empty CSV cells as empty strings so lets skip this mapping
+      # if we don't need to do anything
+      if empty_value_replace_char != ""
+        values = values.map { |s|
+          if s == ""
+            if empty_value_replace_char.nil?
+              s = nil
+            else
+              s = empty_value_replace_char.as(String)
+            end
+          else
+            s
+          end
+        }
+      end
+
+      print Hash.zip(
+        header.as(Array(String)),
+        values
+      ).to_json
 
       begin
         row = csv_io.next_row

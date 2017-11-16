@@ -14,17 +14,13 @@ move somewhere in your $PATH
 	Usage:
 		./c2j [flags...] <file> [arg...]
 
-	CSV to JSON
-
 	Flags:
-		--delimiter, -d
-		--help (default: false)     # Displays help for the current command.
-		--quote-char, -q
-		--tail, -t
-		--version (default: false)
-
-	Arguments:
-		file (required)
+	    --delimiter, -d
+	    --empty-value-replace-char, -e
+	    --help (default: false)         # Displays help for the current command.
+	    --quote-char, -q
+	    --tail, -t
+	    --version (default: false)
 
 Convert CSV to JSON
 
@@ -34,13 +30,22 @@ Convert TSV to JSON
 
 	c2j -d '\t' -q '|' some.txt
 
+Parsing empty CSV cells with something other than `null` by using `--empty-value-replace-char`
+
+	c2j --empty_value_replace_char '' some.txt
+	{ "hello": "" }
+
+instead of:
+
+	{ "hello": null }
+
 Used with `jq` to quickly filter and display data
 
-	 c2j some.csv | jq '.[] | select(.["Last Name"] == "Rutledge")'
+	c2j some.csv | jq '.[] | select(.["Last Name"] == "Rutledge")'
 
 Find records, but redefine all matching objects
 
-	 c2j some.csv | jq '.[] | select(.["Last Name"] == "Rutledge") | { last_name: ."Last Name", first_name: ."First Name" }'
+	c2j some.csv | jq '.[] | select(.["Last Name"] == "Rutledge") | { last_name: ."Last Name", first_name: ."First Name" }'
 
 Used to convert CSV to a format that [`esbulk`](https://github.com/miku/esbulk) can use
 
