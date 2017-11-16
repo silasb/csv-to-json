@@ -17,14 +17,26 @@ class CLI < Admiral::Command
     default: nil
 
   define_argument file : String,
-    required: true
+    required: false
 
   define_help description: "CSV to JSON"
 
   define_version Csv::To::Json::VERSION
 
   def run
-    file = arguments.file
+    io = if ! arguments.file.nil?
+      file = arguments.file.as(String)
+
+      if File.exists?(file)
+      else
+        STDERR.puts "File not found"
+        exit 1
+      end
+
+      File.open(file)
+    else
+      STDIN
+    end
 
     options = {} of Symbol => (Int64 | Char | String | Nil)
 
@@ -66,7 +78,7 @@ class CLI < Admiral::Command
 
     options[:empty_value_replace_char] = flags.empty_value_replace_char
 
-    Csv::To::Json.run(file, options)
+    Csv::To::Json.run(io, options)
   end
 end
 

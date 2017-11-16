@@ -3,12 +3,7 @@ require "csv"
 require "json"
 
 module Csv::To::Json
-  def self.run(csv, options = {} of Symbol => String)
-    unless File.exists?(csv)
-      STDERR.puts "File not found"
-      exit 1
-    end
-
+  def self.run(io, options = {} of Symbol => String)
     STDIN.blocking = true
 
     empty_value_replace_char = options[:empty_value_replace_char]
@@ -16,8 +11,8 @@ module Csv::To::Json
     delimiter = options.fetch(:delimiter, ',').as(Char)
     quote_char = options.fetch(:quote_char, '"').as(Char)
 
-    file = File.open(csv)
-    csv_io = CSV::Parser.new(file, delimiter, quote_char)
+    #file = File.open(csv)
+    csv_io = CSV::Parser.new(io, delimiter, quote_char)
 
     header = csv_io.next_row
 
@@ -59,8 +54,8 @@ module Csv::To::Json
         STDERR.puts "\n"
         STDERR.puts "#{ex} at line: #{count + 3}"
 
-        file.seek(-1 * ex.column_number, IO::Seek::Current)
-        STDERR.puts file.read_line
+        io.seek(-1 * ex.column_number, IO::Seek::Current)
+        STDERR.puts io.read_line
 
         exit 2
       end
