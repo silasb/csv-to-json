@@ -19,9 +19,11 @@ class CLI < Admiral::Command
   define_argument file : String,
     required: false
 
-  define_help description: "CSV to JSON"
+  define_help description: "CSV to JSON",
+    short: h
 
-  define_version Csv::To::Json::VERSION
+  define_version Csv::To::Json::VERSION,
+    short: v
 
   def run
     io = if ! arguments.file.nil?
