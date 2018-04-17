@@ -5,8 +5,8 @@ authors:
   - silasb <silas.baronda@gmail.com>
 
 targets:
-  csv-to-json:
-    main: src/csv-to-json.cr
+  c2j:
+    main: bin/cli.cr
 
 dependencies:
   admiral:

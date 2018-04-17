@@ -5,7 +5,7 @@ Also works with TSV files or any file that can be delimited.
 
 ## Installation
 
-	crystal build --release bin/cli.cr -o c2j
+	shards build c2j --release
 
 move somewhere in your $PATH
 
