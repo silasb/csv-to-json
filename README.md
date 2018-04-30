@@ -9,6 +9,17 @@ Also works with TSV files or any file that can be delimited.
 
 move somewhere in your $PATH
 
+Add it to `shard.yml`
+
+	dependencies:
+		csv-to-json:
+			github: silasb/csv-to-json.cr
+			version: 0.3.0
+
+## Docs
+
+Build the documentation by cloning this repo and running `crystal doc`. HTML documentation will be placed in `doc/`.
+
 ## Usage
 
 	Usage:

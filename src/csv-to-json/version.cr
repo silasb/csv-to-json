@@ -1,3 +1,3 @@
 module Csv::To::Json
-  VERSION = "v0.3.0"
+  VERSION = "0.3.0"
 end
