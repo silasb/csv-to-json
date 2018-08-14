@@ -80,7 +80,9 @@ class CLI < Admiral::Command
 
     options[:empty_value_replace_char] = flags.empty_value_replace_char
 
-    Csv::To::Json.run(io, options)
+    out_io = STDOUT
+
+    Csv::To::Json.run(io, out_io, options)
   end
 end
 

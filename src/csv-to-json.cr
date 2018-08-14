@@ -3,20 +3,21 @@ require "csv"
 require "json"
 
 module Csv::To::Json
-  def self.run(io, options = {} of Symbol => String)
+  # Processes a CSV file on *in_io* with *options* and produces a JSON object on *out_io*
+  def self.run(in_io, out_io, options = {} of Symbol => String)
     STDIN.blocking = true
 
-    empty_value_replace_char = options[:empty_value_replace_char]
+    empty_value_replace_char = options.fetch(:empty_value_replace_char, "").as(String)
     tail = options.delete :tail
     delimiter = options.fetch(:delimiter, ',').as(Char)
     quote_char = options.fetch(:quote_char, '"').as(Char)
 
     #file = File.open(csv)
-    csv_io = CSV::Parser.new(io, delimiter, quote_char)
+    csv_io = CSV::Parser.new(in_io, delimiter, quote_char)
 
     header = csv_io.next_row
 
-    puts "["
+    out_io.puts "["
 
     count = 0
     row = csv_io.next_row
@@ -43,7 +44,7 @@ module Csv::To::Json
         }
       end
 
-      print Hash.zip(
+      out_io.print Hash.zip(
         header.as(Array(String)),
         values
       ).to_json
@@ -54,21 +55,21 @@ module Csv::To::Json
         STDERR.puts "\n"
         STDERR.puts "#{ex} at line: #{count + 3}"
 
-        io.seek(-1 * ex.column_number, IO::Seek::Current)
-        STDERR.puts io.read_line
+        in_io.seek(-1 * ex.column_number, IO::Seek::Current)
+        STDERR.puts in_io.read_line
 
         exit 2
       end
 
       # super ugly
       if tail.nil? ? !row.nil? : tail.to_i != count + 1 && !row.nil?
-        puts ","
+        out_io.puts ","
       else
         break
       end
       count += 1
     end
 
-    puts "\n]"
+    out_io.puts "\n]"
   end
 end
