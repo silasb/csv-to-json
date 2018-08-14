@@ -12,6 +12,6 @@ dependencies:
   admiral:
     github: jwaldrip/admiral.cr
 
-crystal: 0.24.1
+crystal: 0.26.0
 
 license: MIT
