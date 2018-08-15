@@ -20,5 +20,67 @@ describe Csv::To::Json do
     it "will respond to #run" do
       Csv::To::Json.responds_to?(:run).should be_true
     end
+
+    context "with io object" do
+      it "will try to parse the CSV object and output to out_io" do
+        in_io = IO::Memory.new("field 1,field 2\nvalue 1,\n")
+        out_io = IO::Memory.new()
+
+        Csv::To::Json.run(in_io, out_io)
+
+        out_io.seek(0)
+        out_io.to_s.should contain("[\n{\"field 1\":\"value 1\",\"field 2\":\"\"}\n]\n")
+      end
+    end
+
+    context "with options" do
+      context "with empty_value_replace_char option" do
+        it "will replace each empty value with the empty_value_replace_char char" do
+          in_io = IO::Memory.new("field 1,field 2\nvalue 1,\n")
+          out_io = IO::Memory.new()
+
+          options = {
+            :empty_value_replace_char => "blah"
+          }
+
+          Csv::To::Json.run(in_io, out_io, options)
+
+          out_io.seek(0)
+          out_io.to_s.should contain("blah")
+        end
+      end
+
+      context "with delimiter option" do
+        it "will parse on different delimiter" do
+          in_io = IO::Memory.new("field 1\tfield 2\nvalue 1\t\n")
+          out_io = IO::Memory.new()
+
+          options = {
+            :delimiter => '\t'
+          }
+
+          Csv::To::Json.run(in_io, out_io, options)
+
+          out_io.seek(0)
+          out_io.to_s.should contain("[\n{\"field 1\":\"value 1\",\"field 2\":\"\"}\n]\n")
+        end
+      end
+
+      context "with quote_char option" do
+        it "will parse on different quote char" do
+          in_io = IO::Memory.new("field 1,!\"field 2\"!\nvalue 1,\n")
+          out_io = IO::Memory.new()
+
+          options = {
+            :quote_char => '!'
+          }
+
+          Csv::To::Json.run(in_io, out_io, options)
+
+          out_io.seek(0)
+          out_io.to_s.should contain("[\n{\"field 1\":\"value 1\",\"\\\"field 2\\\"\":\"\"}\n]\n")
+        end
+      end
+    end
   end
 end
