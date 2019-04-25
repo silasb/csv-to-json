@@ -82,5 +82,27 @@ describe Csv::To::Json do
         end
       end
     end
+
+    context "unicode data issues" do
+      it "will parse あ char" do
+        in_io = IO::Memory.new("field 1\nあ")
+        out_io = IO::Memory.new()
+
+        Csv::To::Json.run(in_io, out_io)
+
+        out_io.seek(0)
+        out_io.to_s.should contain(%([\n{"field 1":"あ"}\n]\n))
+      end
+
+      it "will parse \u0041 char" do
+        in_io = IO::Memory.new("field 1\n\u0041")
+        out_io = IO::Memory.new()
+
+        Csv::To::Json.run(in_io, out_io)
+
+        out_io.seek(0)
+        out_io.to_s.should contain(%([\n{"field 1":"A"}\n]\n))
+      end
+    end
   end
 end
