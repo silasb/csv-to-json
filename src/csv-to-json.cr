@@ -7,8 +7,6 @@ module Csv::To::Json
   def self.run(in_io, out_io, options = {} of Symbol => String)
     STDIN.blocking = true
 
-    # in_io.set_encoding(encoding: "UTF-8", invalid: :skip)
-
     empty_value_replace_char = options.fetch(:empty_value_replace_char, "")
     tail = options.delete :tail
     delimiter = options.fetch(:delimiter, ',').as(Char)

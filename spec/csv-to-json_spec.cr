@@ -94,15 +94,13 @@ describe Csv::To::Json do
         out_io.to_s.should contain(%([\n{"field 1":"あ"}\n]\n))
       end
 
-      it "will parse bad_data.tsv fixture" do
-        in_io = File.open("spec/fixtures/bad_data.tsv")
-        in_io.set_encoding(encoding: "latin1")
+      it "will throw exception for latin1 encoded file" do
+        in_io = File.open("spec/fixtures/latin1.tsv")
         out_io = IO::Memory.new()
 
-        Csv::To::Json.run(in_io, out_io)
-
-        out_io.seek(0)
-        out_io.to_s.should contain(%([\n{"field 1":"Associação Paulista de Cirurgiões-Den"}\n]\n))
+        expect_raises(InvalidByteSequenceError) do
+          Csv::To::Json.run(in_io, out_io)
+        end
       end
 
       it "will parse \u0041 char" do
