@@ -82,5 +82,36 @@ describe Csv::To::Json do
         end
       end
     end
+
+    context "unicode data issues" do
+      it "will parse あ char" do
+        in_io = IO::Memory.new("field 1\nあ")
+        out_io = IO::Memory.new()
+
+        Csv::To::Json.run(in_io, out_io)
+
+        out_io.seek(0)
+        out_io.to_s.should contain(%([\n{"field 1":"あ"}\n]\n))
+      end
+
+      it "will throw exception for latin1 encoded file" do
+        in_io = File.open("spec/fixtures/latin1.tsv")
+        out_io = IO::Memory.new()
+
+        expect_raises(InvalidByteSequenceError) do
+          Csv::To::Json.run(in_io, out_io)
+        end
+      end
+
+      it "will parse \u0041 char" do
+        in_io = IO::Memory.new("field 1\n\u0041")
+        out_io = IO::Memory.new()
+
+        Csv::To::Json.run(in_io, out_io)
+
+        out_io.seek(0)
+        out_io.to_s.should contain(%([\n{"field 1":"A"}\n]\n))
+      end
+    end
   end
 end
