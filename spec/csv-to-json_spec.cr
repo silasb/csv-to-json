@@ -96,14 +96,13 @@ describe Csv::To::Json do
 
       it "will parse bad_data.tsv fixture" do
         in_io = File.open("spec/fixtures/bad_data.tsv")
+        in_io.set_encoding(encoding: "latin1")
         out_io = IO::Memory.new()
 
         Csv::To::Json.run(in_io, out_io)
 
         out_io.seek(0)
-        # puts String.new(out_io.peek)
-        # out_io.peek.each { |s| puts s.to_char }
-        out_io.to_s.should contain(%([\n{"field 1":"Associao Paulista de Cirurgies-Den"}\n]\n))
+        out_io.to_s.should contain(%([\n{"field 1":"Associação Paulista de Cirurgiões-Den"}\n]\n))
       end
 
       it "will parse \u0041 char" do
