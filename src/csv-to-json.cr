@@ -9,6 +9,7 @@ module Csv::To::Json
 
     empty_value_replace_char = options.fetch(:empty_value_replace_char, "")
     tail = options.delete :tail
+    ndjson = options[:ndjson]
     delimiter = options.fetch(:delimiter, ',').as(Char)
     quote_char = options.fetch(:quote_char, '"').as(Char)
 
@@ -17,7 +18,7 @@ module Csv::To::Json
 
     header = csv_io.next_row
 
-    out_io.puts "["
+    out_io.puts "[" if !ndjson
 
     count = 0
     row = csv_io.next_row
@@ -61,15 +62,15 @@ module Csv::To::Json
         exit 2
       end
 
-      # super ugly
-      if tail.nil? ? !row.nil? : tail.to_i != count + 1 && !row.nil?
-        out_io.puts ","
-      else
+      if row.nil? || !tail.nil? && tail.as(Int64).to_i == count + 1
         break
       end
+
+      out_io.puts ndjson ? "\n" : ","
+
       count += 1
     end
 
-    out_io.puts "\n]"
+    out_io.puts "\n]" if !ndjson
   end
 end

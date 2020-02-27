@@ -10,7 +10,13 @@ class CLI < Admiral::Command
     short: q
 
   define_flag tail : Int64,
+    description: "prints out JSON document after N lines have been processed",
     short: t
+
+  define_flag ndjson : Bool,
+    description: "prints out NDJSON files instead of JSON files",
+    short: n,
+    default: false
 
   define_flag empty_value_replace_char : String,
     short: e,
@@ -40,7 +46,7 @@ class CLI < Admiral::Command
       STDIN
     end
 
-    options = {} of Symbol => (Int64 | Char | String | Nil)
+    options = {} of Symbol => (Bool | Int64 | Char | String | Nil)
 
     if ! flags.delimiter.nil?
       delimiter = flags.delimiter.as(String)
@@ -77,6 +83,8 @@ class CLI < Admiral::Command
     if flags.tail
       options[:tail] = flags.tail.as(Int64)
     end
+
+    options[:ndjson] = flags.ndjson
 
     options[:empty_value_replace_char] = flags.empty_value_replace_char
 
