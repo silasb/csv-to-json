@@ -47,12 +47,12 @@ class CLI < Admiral::Command
 
       if delimiter.starts_with? "\\"
         # escape sequence
-        escaped = delimiter.at(1)
+        escaped = delimiter[1]
         if escaped == 't'
           delimiter = '\t'
         end
       else
-        delimiter = delimiter.at(0)
+        delimiter = delimiter[0]
       end
 
       options[:delimiter] = delimiter
@@ -63,12 +63,12 @@ class CLI < Admiral::Command
 
       if quote_char.starts_with? "\\"
         # escape sequence
-        escaped = quote_char.at(1)
+        escaped = quote_char[1]
         if escaped == 't'
           quote_char = '\t'
         end
       else
-        quote_char = quote_char.at(0)
+        quote_char = quote_char[0]
       end
 
       options[:quote_char] = quote_char
