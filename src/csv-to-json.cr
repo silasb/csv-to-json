@@ -3,13 +3,15 @@ require "csv"
 require "json"
 
 module Csv::To::Json
+  alias Config = Bool | Int64 | Char | String | Nil
+
   # Processes a CSV file on *in_io* with *options* and produces a JSON object on *out_io*
-  def self.run(in_io, out_io, options = {} of Symbol => String)
+  def self.run(in_io, out_io, options = {} of Symbol => Config)
     STDIN.blocking = true
 
     empty_value_replace_char = options.fetch(:empty_value_replace_char, "")
-    tail = options.delete :tail
-    ndjson = options[:ndjson]
+    tail = options.delete(:tail)
+    ndjson = options.fetch(:ndjson, false).as(Bool)
     delimiter = options.fetch(:delimiter, ',').as(Char)
     quote_char = options.fetch(:quote_char, '"').as(Char)
 
@@ -62,7 +64,7 @@ module Csv::To::Json
         exit 2
       end
 
-      if row.nil? || !tail.nil? && tail.as(Int64).to_i == count + 1
+      if row.nil? || !tail.nil? && tail == count + 1
         break
       end
 

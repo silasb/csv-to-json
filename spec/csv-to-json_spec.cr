@@ -81,6 +81,22 @@ describe Csv::To::Json do
           out_io.to_s.should contain("[\n{\"field 1\":\"value 1\",\"\\\"field 2\\\"\":\"\"}\n]\n")
         end
       end
+
+      context "with ndjson option" do
+        it "will output as NDJSON" do
+          in_io = IO::Memory.new("field 1,field 2\nvalue 1,\nvalue 2,test 2\n")
+          out_io = IO::Memory.new()
+
+          options = {
+            :ndjson => true
+          }
+
+          Csv::To::Json.run(in_io, out_io, options)
+
+          out_io.seek(0)
+          out_io.to_s.should eq(%({"field 1":"value 1","field 2":""}\n{"field 1":"value 2","field 2":"test 2"}))
+        end
+      end
     end
 
     context "unicode data issues" do

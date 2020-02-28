@@ -46,7 +46,7 @@ class CLI < Admiral::Command
       STDIN
     end
 
-    options = {} of Symbol => (Bool | Int64 | Char | String | Nil)
+    options = {} of Symbol => Csv::To::Json::Config
 
     if ! flags.delimiter.nil?
       delimiter = flags.delimiter.as(String)
