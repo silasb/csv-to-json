@@ -14,7 +14,7 @@ Add it to `shard.yml`
 	dependencies:
 		csv-to-json:
 			github: silasb/csv-to-json.cr
-			version: 0.3.2
+			version: 0.3.3
 
 ## Docs
 
