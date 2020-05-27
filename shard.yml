@@ -1,5 +1,5 @@
 name: csv-to-json
-version: 0.3.2
+version: 0.3.3
 
 authors:
   - silasb <silas.baronda@gmail.com>
@@ -12,6 +12,6 @@ dependencies:
   admiral:
     github: jwaldrip/admiral.cr
 
-crystal: 0.33.0
+crystal: 0.34.0
 
 license: MIT
