@@ -35,18 +35,36 @@ describe Csv::To::Json do
 
     context "with options" do
       context "with empty_value_replace_char option" do
-        it "will replace each empty value with the empty_value_replace_char char" do
-          in_io = IO::Memory.new("field 1,field 2\nvalue 1,\n")
-          out_io = IO::Memory.new()
+        context "with it set to blah" do
+          it "will replace each empty value with the empty_value_replace_char char" do
+            in_io = IO::Memory.new("field 1,field 2\nvalue 1,\n")
+            out_io = IO::Memory.new()
 
-          options = {
-            :empty_value_replace_char => "blah"
-          }
+            options = {
+              :empty_value_replace_char => "blah"
+            }
 
-          Csv::To::Json.run(in_io, out_io, options)
+            Csv::To::Json.run(in_io, out_io, options)
 
-          out_io.seek(0)
-          out_io.to_s.should contain("blah")
+            out_io.seek(0)
+            out_io.to_s.should contain("blah")
+          end
+        end
+
+        context "with it set to nil" do
+          it "will replace each empty value with the empty_value_replace_char char" do
+            in_io = IO::Memory.new("field 1,field 2\nvalue 1,\n")
+            out_io = IO::Memory.new()
+
+            options = {
+              :empty_value_replace_char => nil
+            }
+
+            Csv::To::Json.run(in_io, out_io, options)
+
+            out_io.seek(0)
+            out_io.to_s.should contain("[\n{\"field 1\":\"value 1\",\"field 2\":null}\n]\n")
+          end
         end
       end
 
